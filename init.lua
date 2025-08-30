@@ -1,6 +1,6 @@
 #!/usr/bin/lua5.1
 
-package.path = package.path .. ";~/.config/nvim/?.lua"
+package.path = package.path .. ";" .. os.getenv("HOME") .. "/.config/nvim/?.lua"
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
@@ -85,4 +85,5 @@ require("smear_cursor").setup()
 require("nvim-autopairs").setup()
 
 vim.cmd("COQnow")
+
 
