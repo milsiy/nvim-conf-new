@@ -1,44 +1,38 @@
-local coq = require("coq")
+local capabilites = require("blink.cmp").get_lsp_capabilities()
 
-vim.lsp.config(
-    "lua_ls",
-    coq.lsp_ensure_capabilities({
-        on_init = function(client)
-            if client.workspace_folders then
-                local path = client.workspace_folders[1].name
-                if
-                    path ~= vim.fn.stdpath("config")
-                    and (
-                        vim.uv.fs_stat(path .. "/.luarc.json")
-                        or vim.uv.fs_stat(path .. "/.luarc.jsonc")
-                    )
-                then
-                    return
-                end
-            end
+vim.lsp.config("lua_ls", {
+	capabilites = capabilites,
+	on_init = function(client)
+		if client.workspace_folders then
+			local path = client.workspace_folders[1].name
+			if
+				path ~= vim.fn.stdpath("config")
+				and (vim.uv.fs_stat(path .. "/.luarc.json") or vim.uv.fs_stat(path .. "/.luarc.jsonc"))
+			then
+				return
+			end
+		end
 
-            client.config.settings.Lua =
-                vim.tbl_deep_extend("force", client.config.settings.Lua, {
-                    runtime = {
-                        version = "LuaJIT",
-                        path = {
-                            "lua/?.lua",
-                            "lua/?/init.lua",
-                        },
-                    },
-                    workspace = {
-                        checkThirdParty = false,
-                        library = {
-                            vim.env.VIMRUNTIME,
-                            "${3rd}/luv/library",
-                            "${3rd}/busted/library",
-                        },
-                    },
-                })
-        end,
-        settings = {
-            Lua = {},
-        },
-    })
-)
+		client.config.settings.Lua = vim.tbl_deep_extend("force", client.config.settings.Lua, {
+			runtime = {
+				version = "LuaJIT",
+				path = {
+					"lua/?.lua",
+					"lua/?/init.lua",
+				},
+			},
+			workspace = {
+				checkThirdParty = false,
+				library = {
+					vim.env.VIMRUNTIME,
+					"${3rd}/luv/library",
+					"${3rd}/busted/library",
+				},
+			},
+		})
+	end,
+	settings = {
+		Lua = {},
+	},
+})
 vim.lsp.enable("lua_ls")
